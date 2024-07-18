@@ -17,7 +17,7 @@ are defined through the program arguments as follows:
 | `-alg <value>`  | This can only take two values: "shift" or "unicode". This sets the application's algorithm.                                                                                                                  |
 
 
-This project has only one class named "Main" with the main method in it. The program starts by
+This project has only one class named "src.Main" with the main method in it. The program starts by
 reading the user arguments since this application is intended to work with these values. In case there
 are arguments missing from the user, all of them will take a default pre-defined value:
 

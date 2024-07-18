@@ -1,20 +1,33 @@
+package src;
+
+import src.Services.EncryptionService;
+
 import java.io.*;
 
+import static src.Algorithms.*;
+
 public class EncryptDecryptApplication {
-    private static final char[] ALPHABET = "abcdefghijklmnopqrstuvwxyz".toCharArray();
     private File inputFile = null;
     private File outputFile = null;
     private BufferedReader bufferedReader = null;
-    private String preferedAlgorithm = "shift";
+    private Algorithms preferedAlgorithm = SHIFT;
     private boolean isEncryptModeON = true;
     private char[] inputCharArray = null;
     private int placesToMove = 0;
+    private static final EncryptionService encryptionService = new EncryptionService();
 
     public void start(String[] args) throws IOException {
         readInputArgs(args);
+        setArgs();
         if(!isInputCharArrayPresent()) processInputFile(inputFile);
-        String result = applyAlgorithm(preferedAlgorithm);
+        String result = encryptionService.encrypt(inputCharArray);
         processResult(result);
+    }
+
+    private void setArgs() {
+        encryptionService.setAlgorithm(preferedAlgorithm);
+        encryptionService.setEncryptModeON(isEncryptModeON);
+        encryptionService.setPlacesToMove(placesToMove);
     }
 
     private void processResult(String result) {
@@ -30,59 +43,26 @@ public class EncryptDecryptApplication {
         }
     }
 
-    private String applyAlgorithm(String preferedAlgorithm) {
-        StringBuilder result = new StringBuilder();
-        if(inputCharArray != null) {
-            for (char currentChar : inputCharArray) {
-                char cypheredChar;
-                if(preferedAlgorithm.equals("unicode")) cypheredChar = processUnicode(currentChar, placesToMove);
-                else cypheredChar = processShift(currentChar, placesToMove);
-                result.append(cypheredChar);
-            }
-        }
-        return result.toString();
-    }
-
-    private char processUnicode(int integerRepresentation, int placesToMove) {
-        return isEncryptModeON ? (char) (integerRepresentation + placesToMove) : (char) (integerRepresentation - placesToMove);
-    }
-
-    private char processShift(char c, int placesToMove) {
-        if(!Character.isLetter(c)) return c;
-        int index = 0;
-        for(char letter : ALPHABET) {
-            if(c == letter) break;
-            else index++;
-        }
-        if(isEncryptModeON) {
-            for (int i = 0; i < placesToMove; i++) {
-                if (index >= ALPHABET.length) index = 1;
-                else index++;
-            }
-        } else {
-            for (int i = 0; i < placesToMove; i++) {
-                if (index < 0) index = 24;
-                else index--;
-            }
-        }
-        return ALPHABET[index];
-    }
-
     private boolean isInputCharArrayPresent() {
         return inputCharArray != null;
     }
 
     private void readInputArgs(String[] args) {
         for(int i = 0; i < args.length; i++) {
-            switch (args[i]) {
-                case "-mode" -> isEncryptModeON = args[i + 1].equals("enc");
-                case "-key" -> placesToMove = Integer.parseInt(args[i + 1]);
-                case "-data" -> inputCharArray = args[i + 1].toCharArray();
-                case "-in" -> inputFile = new File(args[i + 1]);
-                case "-out" -> outputFile = new File(args[i + 1]);
-                case "-alg" -> preferedAlgorithm = args[i + 1];
+            Arguments arg = parseArg(args[i]);
+            switch (arg) {
+                case MODE -> isEncryptModeON = args[i + 1].equals("enc");
+                case KEY -> placesToMove = Integer.parseInt(args[i + 1]);
+                case DATA -> inputCharArray = args[i + 1].toCharArray();
+                case IN -> inputFile = new File(args[i + 1]);
+                case OUT -> outputFile = new File(args[i + 1]);
+                case ALG -> preferedAlgorithm = Algorithms.valueOf(args[i + 1].toUpperCase());
             }
         }
+    }
+
+    private Arguments parseArg(String arg) {
+        return Arguments.valueOf(arg.substring(1).toUpperCase());
     }
 
     private void processInputFile(File inputFile) throws IOException {
