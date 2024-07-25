@@ -1,10 +1,17 @@
 package src;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import src.Services.EncryptionService;
-
-import java.io.*;
-
-import static src.Algorithms.*;
+import static src.Algorithms.SHIFT;
 
 public class EncryptDecryptApplication {
     private File inputFile = null;
@@ -31,14 +38,14 @@ public class EncryptDecryptApplication {
     }
 
     private void processResult(String result) {
-        if(outputFile == null) {
+        if (outputFile == null) {
             System.out.println(result);
         } else {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+            try (BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
                 writer.write(result);
             } catch (IOException e) {
                 System.err.println("Error al escribir en el archivo de salida: " + e.getMessage());
-                System.exit(1);
             }
         }
     }
@@ -66,29 +73,29 @@ public class EncryptDecryptApplication {
     }
 
     private void processInputFile(File inputFile) throws IOException {
-        if(inputFile != null) {
+        if (inputFile != null) {
             try {
-                if(inputFile.exists()) {
-                    if(!outputFile.exists()) outputFile.createNewFile();
-
-                    bufferedReader = new BufferedReader(new FileReader(inputFile));
-
-                    StringBuilder content = new StringBuilder();
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        content.append(line);
+                if (inputFile.exists()) {
+                    if (!outputFile.exists() && outputFile.createNewFile()) {
+                            // Usa InputStreamReader con una codificación específica
+                            bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), StandardCharsets.UTF_8));
+                            StringBuilder content = new StringBuilder();
+                            String line;
+                            while ((line = bufferedReader.readLine()) != null) {
+                                content.append(line);
+                            }
+                            inputCharArray = content.toString().toCharArray();
                     }
-                    inputCharArray = content.toString().toCharArray();
                 } else {
                     throw new FileNotFoundException("El archivo de entrada especificado no existe: " + inputFile.getAbsolutePath());
                 }
 
             } catch (IOException e) {
                 System.err.println("Error al procesar el archivo de entrada: " + e.getMessage());
-                System.exit(1);
             } finally {
-                if(bufferedReader != null) bufferedReader.close();
+                if (bufferedReader != null) bufferedReader.close();
             }
         }
     }
 }
+

@@ -44,7 +44,7 @@ public class EncryptionService {
             }
         } else {
             for (int i = 0; i < placesToMove; i++) {
-                if (index < 0) index = 24;
+                if (index < 0) index = ALPHABET.length - 2;
                 else index--;
             }
         }
