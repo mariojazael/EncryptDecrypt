@@ -1,6 +1,6 @@
-package src.Services;
+package com.mramirez.Services;
 
-import src.Algorithms;
+import com.mramirez.Algorithms;
 
 public class EncryptionService {
     private static final char[] ALPHABET = "abcdefghijklmnopqrstuvwxyz".toCharArray();
@@ -39,12 +39,13 @@ public class EncryptionService {
         }
         if(isEncryptModeON) {
             for (int i = 0; i < placesToMove; i++) {
-                if (index >= ALPHABET.length) index = 1;
+                if (index >= ALPHABET.length - 1) index = 0;
                 else index++;
             }
         } else {
             for (int i = 0; i < placesToMove; i++) {
-                if (index < 0) index = ALPHABET.length - 2;
+                System.out.println(index);
+                if (index <= 0) index = ALPHABET.length - 1;
                 else index--;
             }
         }

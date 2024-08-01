@@ -1,5 +1,6 @@
-package src;
+package com.mramirez;
 
+import com.mramirez.Services.EncryptionService;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,10 +11,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import src.Services.EncryptionService;
-import static src.Algorithms.SHIFT;
+import static com.mramirez.Algorithms.SHIFT;
 
 public class EncryptDecryptApplication {
+    private final EncryptionService encryptionService;
     private File inputFile = null;
     private File outputFile = null;
     private BufferedReader bufferedReader = null;
@@ -21,14 +22,18 @@ public class EncryptDecryptApplication {
     private boolean isEncryptModeON = true;
     private char[] inputCharArray = null;
     private int placesToMove = 0;
-    private static final EncryptionService encryptionService = new EncryptionService();
 
-    public void start(String[] args) throws IOException {
+    EncryptDecryptApplication(EncryptionService encryptionService) {
+        this.encryptionService = encryptionService;
+    }
+
+    public String start(String[] args) throws IOException {
         readInputArgs(args);
         setArgs();
         if(!isInputCharArrayPresent()) processInputFile(inputFile);
         String result = encryptionService.encrypt(inputCharArray);
         processResult(result);
+        return result;
     }
 
     private void setArgs() {
@@ -55,8 +60,8 @@ public class EncryptDecryptApplication {
     }
 
     private void readInputArgs(String[] args) {
-        for(int i = 0; i < args.length; i++) {
-            Arguments arg = parseArg(args[i]);
+        for(int i = 0; i < args.length; i += 2) {
+            ApplicationArguments arg = parseArg(args[i]);
             switch (arg) {
                 case MODE -> isEncryptModeON = args[i + 1].equals("enc");
                 case KEY -> placesToMove = Integer.parseInt(args[i + 1]);
@@ -68,8 +73,8 @@ public class EncryptDecryptApplication {
         }
     }
 
-    private Arguments parseArg(String arg) {
-        return Arguments.valueOf(arg.substring(1).toUpperCase());
+    private ApplicationArguments parseArg(String arg) {
+        return ApplicationArguments.valueOf(arg.substring(1).toUpperCase());
     }
 
     private void processInputFile(File inputFile) throws IOException {
