@@ -94,7 +94,6 @@ public class EncryptDecryptApplication {
                 } else {
                     throw new FileNotFoundException("El archivo de entrada especificado no existe: " + inputFile.getAbsolutePath());
                 }
-
             } catch (IOException e) {
                 System.err.println("Error al procesar el archivo de entrada: " + e.getMessage());
             } finally {

@@ -73,3 +73,9 @@ And that's was a demostration on how these tools work together!
 In the picture below there is a code coverage report from jacoco. I was asked to reach a 80% minimum code coverage:
 
 ![Jacoco report](src/main/resources/codeCoverageJacoco.png)
+
+After that, I realized there was a special case I was missing where an input file was read for getting the text to be encrypted. In order
+to increase the coverage percentage I had to build an actual input text file and then use it across a couple of test. This 
+was the result after doing so: 
+
+![Jacoco report update](src/main/resources/codeCoverageJacocoUpdated.png)
