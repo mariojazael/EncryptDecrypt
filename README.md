@@ -64,6 +64,12 @@ and the *reporting* section inside the POM.xml file. The report thrown this:
 
 After fixing these issues, there were no classes with bugs in them: 
 
-![spotbugs expected output](src/main/resources/expected%20spotbug%20output.png)
+![expected Spotbug Output](src/main/resources/expectedSpotbugOutput.png)
 
 And that's was a demostration on how these tools work together!
+
+## Code coverage with jacoco
+
+In the picture below there is a code coverage report from jacoco. I was asked to reach a 80% minimum code coverage:
+
+![Jacoco report](src/main/resources/codeCoverageJacoco.png)

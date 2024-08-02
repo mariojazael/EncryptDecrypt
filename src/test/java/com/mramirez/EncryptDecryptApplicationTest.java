@@ -27,6 +27,8 @@ class EncryptDecryptApplicationTest {
 
     private static final Queue<String> inputs = new LinkedList<>();
 
+    private static final Queue<String> fullAnswers = new LinkedList<>();
+
     private static final Queue<String> encryptShiftAnswers = new LinkedList<>();
 
     private static final Queue<String> decryptShiftAnswers = new LinkedList<>();
@@ -115,28 +117,32 @@ class EncryptDecryptApplicationTest {
         assertEquals(testConfiguration.answers().poll(), cypheredText);
     }
 
+    static Stream<Arguments> fullArgs() {
+        return Stream.concat(Stream.concat(encryptShiftArgs(), decryptShiftArgs()), Stream.concat(encryptUnicodeArgs(), decryptUnicodeArgs()));
+    }
+
     static Stream<Arguments> decryptShiftArgs() {
-        return Stream.of(Arguments.of((Object) new String[]{"-mode", "dec", "-key", "2", "-data", "cypher me!", "-alg", "shift"}),
-                Arguments.of((Object) new String[]{"-mode", "dec", "-key", "4", "-data", "i am a silly guy", "-alg", "shift"}),
-                Arguments.of((Object) new String[]{"-mode", "dec", "-key", "15", "-data", "today was a good day!", "-alg", "shift"}));
+        return Stream.of(Arguments.of((Object) new String[]{"-mode", "dec", "-key", "2", "-data", "cypher me!", "-alg", "shift", "-in", "in.txt", "-out", "out.txt"}),
+                Arguments.of((Object) new String[]{"-mode", "dec", "-key", "4", "-data", "i am a silly guy", "-alg", "shift", "-in", "in.txt", "-out", "out.txt"}),
+                Arguments.of((Object) new String[]{"-mode", "dec", "-key", "15", "-data", "today was a good day!", "-alg", "shift", "-in", "in.txt", "-out", "out.txt"}));
     }
 
     static Stream<Arguments> encryptShiftArgs() {
-        return Stream.of(Arguments.of((Object) new String[]{"-mode", "enc", "-key", "2", "-data", "cypher me!", "-alg", "shift"}),
-                Arguments.of((Object) new String[]{"-mode", "enc", "-key", "4", "-data", "i am a silly guy", "-alg", "shift"}),
-                Arguments.of((Object) new String[]{"-mode", "enc", "-key", "15", "-data", "today was a good day!", "-alg", "shift"}));
+        return Stream.of(Arguments.of((Object) new String[]{"-mode", "enc", "-key", "2", "-data", "cypher me!", "-alg", "shift", "-in", "in.txt", "-out", "out.txt"}),
+                Arguments.of((Object) new String[]{"-mode", "enc", "-key", "4", "-data", "i am a silly guy", "-alg", "shift", "-in", "in.txt", "-out", "out.txt"}),
+                Arguments.of((Object) new String[]{"-mode", "enc", "-key", "15", "-data", "today was a good day!", "-alg", "shift", "-in", "in.txt", "-out", "out.txt"}));
     }
 
     static Stream<Arguments> encryptUnicodeArgs() {
-        return Stream.of(Arguments.of((Object) new String[]{"-mode", "enc", "-key", "2", "-data", "cypher me!", "-alg", "unicode"}),
-                Arguments.of((Object) new String[]{"-mode", "enc", "-key", "4", "-data", "i am a silly guy", "-alg", "unicode"}),
-                Arguments.of((Object) new String[]{"-mode", "enc", "-key", "5", "-data", "today was a good day!", "-alg", "unicode"}));
+        return Stream.of(Arguments.of((Object) new String[]{"-mode", "enc", "-key", "2", "-data", "cypher me!", "-alg", "unicode", "-in", "in.txt", "-out", "out.txt"}),
+                Arguments.of((Object) new String[]{"-mode", "enc", "-key", "4", "-data", "i am a silly guy", "-alg", "unicode", "-in", "in.txt", "-out", "out.txt"}),
+                Arguments.of((Object) new String[]{"-mode", "enc", "-key", "5", "-data", "today was a good day!", "-alg", "unicode", "-in", "in.txt", "-out", "out.txt"}));
     }
 
     static Stream<Arguments> decryptUnicodeArgs() {
-        return Stream.of(Arguments.of((Object) new String[]{"-mode", "dec", "-key", "2", "-data", "cypher me!", "-alg", "unicode"}),
-                Arguments.of((Object) new String[]{"-mode", "dec", "-key", "4", "-data", "i am a silly guy", "-alg", "unicode"}),
-                Arguments.of((Object) new String[]{"-mode", "dec", "-key", "5", "-data", "today was a good day!", "-alg", "unicode"}));
+        return Stream.of(Arguments.of((Object) new String[]{"-mode", "dec", "-key", "2", "-data", "cypher me!", "-alg", "unicode", "-in", "in.txt", "-out", "out.txt"}),
+                Arguments.of((Object) new String[]{"-mode", "dec", "-key", "4", "-data", "i am a silly guy", "-alg", "unicode", "-in", "in.txt", "-out", "out.txt"}),
+                Arguments.of((Object) new String[]{"-mode", "dec", "-key", "5", "-data", "today was a good day!", "-alg", "unicode", "-in", "in.txt", "-out", "out.txt"}));
     }
 
     private static void fillQueues() {
@@ -145,6 +151,7 @@ class EncryptDecryptApplicationTest {
         fillDecryptShiftAnswers();
         fillEncryptUnicodeAnswers();
         fillDecryptUnicodeAnswers();
+        fillFullAnswers();
     }
 
     private static void fillInputQueue() {
@@ -153,28 +160,40 @@ class EncryptDecryptApplicationTest {
         inputs.add("today was a good day!");
     }
 
-    private static void fillEncryptShiftAnswers() {
+    private static Queue<String> fillFullAnswers() {
+        fullAnswers.addAll(encryptShiftAnswers.isEmpty() ? fillEncryptShiftAnswers() : encryptShiftAnswers);
+        fullAnswers.addAll(decryptShiftAnswers.isEmpty() ? fillDecryptShiftAnswers() : decryptShiftAnswers);
+        fullAnswers.addAll(encryptUnicodeAnswers.isEmpty() ? fillEncryptUnicodeAnswers() : encryptUnicodeAnswers);
+        fullAnswers.addAll(decryptUnicodeAnswers.isEmpty() ? fillDecryptUnicodeAnswers() : decryptUnicodeAnswers);
+        return fullAnswers;
+    }
+
+    private static Queue<String> fillEncryptShiftAnswers() {
         encryptShiftAnswers.add("earjgt og!");
-        encryptShiftAnswers.add("l dp d vloob jxb");
-        encryptShiftAnswers.add("wrgdb zdv d jrrg gdb!");
+        encryptShiftAnswers.add("m eq e wmppc kyc");
+        encryptShiftAnswers.add("idspn lph p vdds spn!");
+        return encryptShiftAnswers;
     }
 
-    private static void fillDecryptShiftAnswers() {
+    private static Queue<String> fillDecryptShiftAnswers() {
         decryptShiftAnswers.add("awnfcp kc!");
-        decryptShiftAnswers.add("g yk y qgjjw esw");
+        decryptShiftAnswers.add("e wi w oehhu cqu");
         decryptShiftAnswers.add("ezolj hld l rzzo olj!");
+        return decryptShiftAnswers;
     }
 
-    private static void fillEncryptUnicodeAnswers() {
+    private static Queue<String> fillEncryptUnicodeAnswers() {
         encryptUnicodeAnswers.add("e{rjgt\"og#");
         encryptUnicodeAnswers.add("m$eq$e$wmpp}$ky}");
         encryptUnicodeAnswers.add("ytif~%|fx%f%ltti%if~&");
+        return encryptUnicodeAnswers;
     }
 
-    private static void fillDecryptUnicodeAnswers() {
-        decryptUnicodeAnswers.add("awnfcp\u001Ekc");
+    private static Queue<String> fillDecryptUnicodeAnswers() {
+        decryptUnicodeAnswers.add("awnfcp\u001Ekc\u001F");
         decryptUnicodeAnswers.add("e\u001C]i\u001C]\u001Coehhu\u001Ccqu");
         decryptUnicodeAnswers.add("oj_\\t\u001Br\\n\u001B\\\u001Bbjj_\u001B_\\t\u001C");
+        return decryptUnicodeAnswers;
     }
 
     private static void initConfigurations() {
@@ -190,5 +209,11 @@ class EncryptDecryptApplicationTest {
         if(decryptShiftAnswers.isEmpty()) fillDecryptShiftAnswers();
         if(encryptUnicodeAnswers.isEmpty()) fillDecryptUnicodeAnswers();
         if(decryptUnicodeAnswers.isEmpty()) fillDecryptUnicodeAnswers();
+        if(fullAnswers.isEmpty()) fillFullAnswers();
+    }
+
+    static Queue<String> getFullAnswers() {
+        System.out.println(fullAnswers.size());
+        return fullAnswers.isEmpty() ? fillFullAnswers() : fullAnswers;
     }
 }
